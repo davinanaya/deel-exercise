@@ -1,0 +1,63 @@
+.App {
+  text-align: center;
+  width: 40%;
+  margin: auto;
+}
+
+input {
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid #ced4da;
+  border-radius: 0;
+  outline: 0;
+  height: auto;
+  padding: 0.6rem 0 0.4rem 0;
+  margin: 0 0 0.5rem 0;
+  width: 100%;
+  font-size: 1rem;
+}
+
+input:focus {
+  border-bottom: 2px solid green;
+  box-shadow: rgb(66, 133, 244) 0px 1px 0px 0px;
+}
+
+.no-autocomplete {
+  color: #999;
+  padding: 8px;
+}
+
+.wrapper-autocomplete {
+  position: relative;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.autocomplete {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 100;
+  padding-left: 0;
+  overflow-y: auto;
+  list-style-type: none;
+  background: #fff;
+  -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  margin-top: 0;
+  max-height: 220px;
+}
+
+.autocomplete li {
+  padding: 12px 15px;
+  font-size: .875rem;
+  cursor: pointer;
+}
+
+.autocomplete > .active,
+.autocomplete li:hover {
+  background: #eee;
+  cursor: pointer;
+}
