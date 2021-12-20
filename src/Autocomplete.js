@@ -1,53 +1,47 @@
-import React, { useState, useCallback } from "react";
+import React, { Component } from "react";
+import { debounceFn } from "./util";
 
-const debounceFn = (func, delay) => {
-    let timer;
-    return function() {
-        let self = this;
-        let args= arguments;
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            func.apply(self, args)
-        }, delay)
+class Autocomplete extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            input: '',
+            loading: false
+        };
+        this.oncHangeHandler = this.oncHangeHandler.bind(this);
     }
-}
-
-const Autocomplete = ({ data, onChange }) => {
-    const [input, setInput] = useState("");
-    const [loading, setLoading] = useState(false);
 
     // Split text on highlight term, include term itself into parts
-    const getHighlightedText = (text, highlight) => {
+    getHighlightedText(text, highlight) {
         const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
         return <span>{parts.map((part, i) =>
             part.toLowerCase() === highlight.toLowerCase() ? <b key={i}>{part}</b> : part)}
         </span>;
     }
 
-    const debounceSearch = useCallback(debounceFn((nextValue) => {
-        onChange(nextValue)
-        setLoading(false)
-    }, 500), [])
+    debounceSearch = debounceFn((nextValue) => {
+        this.props.onChange(nextValue);
+        this.setState({ loading: false });
+    }, 500)
 
-    const oncHangeHandler = e => {
+    oncHangeHandler(e) {
         const input = e.target.value;
-        setInput(input)
-        setLoading(true)
-        debounceSearch(input);
+        this.setState({ input, loading: true });
+        this.debounceSearch(input);
     };
 
-    const renderAutocomplete = () => {
-        if (data.length) {
+    renderAutocomplete() {
+        if (this.props.data.length) {
             return (
                 <ul className="autocomplete">
-                    {data.map((suggestion, index) => (
+                    {this.props.data.map((suggestion, index) => (
                         <li key={index}>
-                            {getHighlightedText(suggestion.title, input)}
+                            {this.getHighlightedText(suggestion.title, this.state.input)}
                         </li>
                     ))}
                 </ul>
             );
-        } else {
+        } else if (this.state.input && !this.props.data.length) {
             return (
             <div className="no-autocomplete">
                 <em>Not found</em>
@@ -56,17 +50,19 @@ const Autocomplete = ({ data, onChange }) => {
         }
     }
 
-    return (
-        <div className="wrapper-autocomplete">
-            <input
-                type="text"
-                onChange={oncHangeHandler}
-                value={input}
-                placeholder="Search your favorite movies"
-            />
-            {!loading ? renderAutocomplete(): <p>Loading...</p>}
-        </div>
-    );
+    render() {
+        return (
+            <div className="wrapper-autocomplete">
+                <input
+                    type="text"
+                    onChange={this.oncHangeHandler}
+                    value={this.state.input}
+                    placeholder="Search your favorite movies"
+                />
+                {!this.state.loading ? this.renderAutocomplete(): <p>Loading...</p>}
+            </div>
+        );
+    }
 }
 
 export default Autocomplete;
